@@ -34,6 +34,8 @@ import stackdriver_service
 import stackdriver_handlers
 import util
 
+import wavefront_service
+import pdb
 
 DEFAULT_CONFIG_PATH = '/opt/spinnaker-monitoring/config/spinnaker-monitoring.yml'
 
@@ -108,6 +110,8 @@ def prepare_commands():
   server_handlers.MonitorCommandHandler.register_metric_service_factory(
       datadog_service.DatadogServiceFactory())
   server_handlers.MonitorCommandHandler.register_metric_service_factory(
+    wavefront_service.WavefrontServiceFactory())
+  server_handlers.MonitorCommandHandler.register_metric_service_factory(
       stackdriver_service.StackdriverServiceFactory())
   server_handlers.add_handlers(all_command_handlers, subparsers)
 
@@ -142,7 +146,7 @@ def main():
   stores = options['monitor'].get('metric_store', [])
   if not isinstance(stores, list):
     stores = [stores]
-  stores.extend([store for store in ['datadog', 'prometheus', 'stackdriver']
+  stores.extend([store for store in ['datadog', 'prometheus', 'stackdriver', "wavefront"]
                  if options.get('monitor_' + store)])
   options['monitor']['metric_store'] = set(stores)
 
@@ -174,4 +178,5 @@ def set_default_paths():
 
 if __name__ == '__main__':
   set_default_paths()
+  pdb.set_trace()
   main()
