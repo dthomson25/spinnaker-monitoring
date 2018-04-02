@@ -26,6 +26,7 @@ import command_processor
 import datadog_service
 import datadog_handlers
 import prometheus_service
+import s3_service
 import server_handlers
 import spectator_client
 import spectator_handlers
@@ -108,6 +109,8 @@ def prepare_commands():
   server_handlers.MonitorCommandHandler.register_metric_service_factory(
       datadog_service.DatadogServiceFactory())
   server_handlers.MonitorCommandHandler.register_metric_service_factory(
+      s3_service.S3ServiceFactory())
+  server_handlers.MonitorCommandHandler.register_metric_service_factory(
       stackdriver_service.StackdriverServiceFactory())
   server_handlers.add_handlers(all_command_handlers, subparsers)
 
@@ -142,7 +145,7 @@ def main():
   stores = options['monitor'].get('metric_store', [])
   if not isinstance(stores, list):
     stores = [stores]
-  stores.extend([store for store in ['datadog', 'prometheus', 'stackdriver']
+  stores.extend([store for store in ['datadog', 'prometheus', 'stackdriver', "s3"]
                  if options.get('monitor_' + store)])
   options['monitor']['metric_store'] = set(stores)
 

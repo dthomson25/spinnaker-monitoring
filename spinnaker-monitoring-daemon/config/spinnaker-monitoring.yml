@@ -23,6 +23,7 @@ monitor:
 #    - datadog
 #    - prometheus
 #    - stackdriver
+#    - s3
 
 
 datadog:
@@ -61,3 +62,12 @@ stackdriver:
   # The instance id (is a number)
   # If left blank, and on GCP, this will populate from the metadata server.
   instance_id:
+
+s3:
+  bucket:
+
+tags:
+  org: abc123
+  app: spinnaker
+
+# metric_prefix: company.spinnaker
