@@ -11,6 +11,13 @@ server:
   host: localhost
   port: 8008
 
+gate_x509:
+  metrics_urls:
+  #TODO list this connection in only one place 
+  - https://api.admin.spinnaker.intuit.com/spectator/metrics
+  certPath: /Users/dthomson/roer-certs/dthomsonNoPass.crt
+  keyPath: /Users/dthomson/roer-certs/dthomsonNoPass.key
+
 
 monitor:
   # The frequency to poll each of the metric sources in the <registry>
@@ -23,7 +30,7 @@ monitor:
 #    - datadog
 #    - prometheus
 #    - stackdriver
-#    - s3
+   - s3
 
 
 datadog:
@@ -64,10 +71,11 @@ stackdriver:
   instance_id:
 
 s3:
-  bucket:
+  bucket: intu-oim-dev-6-us-west-2
 
 tags:
-  org: abc123
+  bu: sbg
   app: spinnaker
+  env: admin
 
-# metric_prefix: company.spinnaker
+metric_prefix: custom.sbg.spinnaker.

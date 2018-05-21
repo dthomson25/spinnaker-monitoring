@@ -1,1 +1,1 @@
-metrics_url: http://localhost:8084/spectator/metrics
+metrics_url: https://api.admin.spinnaker.intuit.com/spectator/metrics

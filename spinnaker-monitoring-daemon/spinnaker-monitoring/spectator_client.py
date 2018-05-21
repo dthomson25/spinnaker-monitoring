@@ -29,7 +29,7 @@ import traceback
 import urllib2
 import urlparse
 import yaml
-
+import httplib
 
 DEFAULT_REGISTRY_DIR = '/opt/spinnaker-monitoring/registry'
 
@@ -37,6 +37,20 @@ DEFAULT_REGISTRY_DIR = '/opt/spinnaker-monitoring/registry'
 _cached_registry_catalog = None
 _cached_registry_timestamp = None
 
+class HTTPSClientAuthHandler(urllib2.HTTPSHandler):
+    def __init__(self, key, cert):
+        urllib2.HTTPSHandler.__init__(self)
+        self.key = key
+        self.cert = cert
+
+    def https_open(self, req):
+        # Rather than pass in a reference to a connection class, we pass in
+        # a reference to a function which, for all intents and purposes,
+        # will behave as a constructor
+        return self.do_open(self.getConnection, req)
+
+    def getConnection(self, host, timeout=300):
+        return httplib.HTTPSConnection(host, key_file=self.key, cert_file=self.cert)
 
 def get_source_catalog(options):
   """Returns a dictionary of metric source name to configuration document.
@@ -143,6 +157,10 @@ class SpectatorClient(object):
       # pylint: disable=invalid-name
       with open(options['prototype_path']) as fd:
         self.__prototype = json.JSONDecoder().decode(fd.read())
+    if options['gate_x509']:
+      self.metrics_urls = options['gate_x509']['metrics_urls']
+      self.certPath = options['gate_x509']['certPath']
+      self.keyPath = options['gate_x509']['keyPath']
 
   def __log_scan_diff(self, host, port, metrics):
     """Diff this scan with the previous one for debugging purposes."""
@@ -248,8 +266,11 @@ class SpectatorClient(object):
       sep = "&"
 
     url = '{base_url}{query}'.format(base_url=base_url, query=query)
-    response = urllib2.urlopen(self.create_request(url, authorization))
-
+    if base_url in self.metrics_urls:
+      opener = urllib2.build_opener(HTTPSClientAuthHandler(self.keyPath, self.certPath) )
+      response = opener.open(self.create_request(url, authorization))
+    else:
+      response = urllib2.urlopen(self.create_request(url, authorization) )
     all_metrics = json.JSONDecoder(encoding='utf-8').decode(response.read())
     try:
       self.__log_scan_diff(host, port + 1012, all_metrics.get('metrics', {}))

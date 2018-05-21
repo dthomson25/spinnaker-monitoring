@@ -270,6 +270,36 @@ class SpectatorClientTest(unittest.TestCase):
 
   @patch('spectator_client.time.time')
   @patch('spectator_client.urllib2.urlopen')
+  def test_collect_metrics_with_certificate(self, mock_urlopen, mock_time):
+    #TODO: Figure out test...
+    now_time = 1.234
+    port = 80
+    url = 'https://{0}/spectator-metrics'.format(TEST_HOST)
+    metrics_response = CLOUDDRIVER_RESPONSE_OBJ
+    expect = copy.deepcopy(metrics_response)
+    expect['__host'] = TEST_HOST
+    expect['__port'] = port
+    expect['metrics']['spectator.datapoints'] = {
+      'kind': 'Gauge',
+      'values': [{'values': [{'t': int(now_time * 1000), 'v': 4}],
+                  'tags': [{'key': 'success', 'value': 'true'}]}]
+    }
+
+    text = json.JSONEncoder(encoding='utf-8').encode(metrics_response)
+    mock_http_response = StringIO(text)
+    mock_urlopen.return_value = mock_http_response
+    mock_time.return_value = now_time
+
+    response = self.spectator.collect_metrics(url)
+    self.assertEquals([
+      ('https://{0}/spectator-metrics{1}'.format(TEST_HOST,
+                                                 self.default_query_params),
+           base64.encodestring('TESTUSER:TESTPASSWORD').replace('\n', ''))],
+       self.spectator.requests)
+    self.assertEqual(expect, response)
+
+  @patch('spectator_client.time.time')
+  @patch('spectator_client.urllib2.urlopen')
   def test_scan_by_service_one(self, mock_urlopen, mock_time):
     now_time = 1.234
     url = 'http://{0}:7002/spectator-metrics'.format(TEST_HOST)

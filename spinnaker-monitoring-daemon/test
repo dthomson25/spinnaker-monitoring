@@ -1,0 +1,12 @@
+{
+    "AssumedRoleUser": {
+        "AssumedRoleId": "AROAIGRQFQL7UR7CIUWYO:dockerdev", 
+        "Arn": "arn:aws:sts::934416881576:assumed-role/SpinnakerInstanceProfile/dockerdev"
+    }, 
+    "Credentials": {
+        "SecretAccessKey": "I6V7oLFo9mu/lv/SIVSYY8P/vT9QzJQ1qr7RGy/M", 
+        "SessionToken": "FQoDYXdzEIf//////////wEaDB+VJZmqG5FvysCEQyLtATav+vFtdVn21eq/nSvQg4QDfAYqLnWRMIQ4gAj1SJqDjNwXwoMNJofHWBHM55tKN88DxdJ5pNvqX5HEhwiAQTdlrLbA0MV3Y9DJXvIX5W5M1xOzJEa8rmSRsaPnlDOWqy2TD/c4GYHYaJV2CrJarjwzVCoX03umk70SZaoCess4VTfcdw+Xb+ZnlQMK1fz09dqB5PmsRNVw4rsNMoXcCsOwWO3dzwG31tJz8ffEB+3hNTWUzvXo4Yp+zYjH8+aGfZzO0zoCumsB1evXcbWnkUAHljZkF5A9K+LowEXNuhMm7g129o2uWI76eNyAVSiYl5zWBQ==", 
+        "Expiration": "2018-04-06T06:54:32Z", 
+        "AccessKeyId": "ASIAIFGE76JODIZACO4Q"
+    }
+}

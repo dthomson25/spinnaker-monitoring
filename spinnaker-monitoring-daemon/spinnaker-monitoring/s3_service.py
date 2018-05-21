@@ -83,11 +83,13 @@ class S3MetricsService(object):
     return len(points)
 
 def make_s3_service(options):
-  # TODO: Add option to specify controller AWS Credential
+  # TODO: Add option to specify controller AWS Credentials
   s3_bucket = os.environ.get('S3_BUCKET', options.get('s3',{}).get('bucket',''))
   prefined_tags = options.get("tags",[])
   # TODO: Add metric_prefix to other services
   metric_prefix = options.get("metric_prefix",'')
+  if metric_prefix[-1] == '.':
+    metric_prefix = metric_prefix[:-1]
   if s3_bucket is None:
     raise ValueError('s3_bucket is not defined')
 
